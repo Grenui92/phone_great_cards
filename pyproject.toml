@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "phone-great-cards"
+version = "0.0.1"
+description = ""
+authors = ["Grenui92"]
+readme = "README.md"
+packages = [{include = "phone_great_cards"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+kivy = {extras = ["base"], version = "^2.2.1"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
