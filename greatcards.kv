@@ -1,0 +1,32 @@
+<MainWindow>:
+    orientation: 'vertical'
+    spacing: root.height * 0.1
+    
+    BoxLayout:
+        orientation: 'vertical'
+        padding: self.width * 0.1, 0
+        spacing: self.height * 0.05
+
+        TextInput:
+            id: username
+            hint_text: 'Enter username'
+            multiline: False
+
+        TextInput:
+            id: password
+            hint_text: 'Enter your password'
+            multiline: False
+            password: True
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        Button:
+            text: 'Submit'
+            size_hint: None, None
+            pos_hint: {'top': 1}
+
+        Button:
+            text: 'Reset'
+            size_hint: None, None
+            pos_hint: {'top': 1}

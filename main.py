@@ -1,8 +1,8 @@
 from kivy.app import App
 
 from kivy.uix.boxlayout import BoxLayout
-
-from login import LoginWindow
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.anchorlayout import AnchorLayout
 
 class MainWindow(BoxLayout):
     pass
@@ -10,9 +10,7 @@ class MainWindow(BoxLayout):
 class GreatCardsApp(App):
     
     def build(self):
-        main_window = MainWindow(orientation="vertical")
-        login_window = LoginWindow(orientation="vertical", size_hint=(1, 0.1))
-        main_window.add_widget(login_window)
+        main_window = MainWindow()
         return main_window
 
     

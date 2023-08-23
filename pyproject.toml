@@ -9,6 +9,7 @@ packages = [{include = "phone_great_cards"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 kivy = {extras = ["base"], version = "^2.2.1"}
+kivy-examples = "^2.2.1"
 
 
 [build-system]
