@@ -10,6 +10,10 @@ packages = [{include = "phone_great_cards"}]
 python = "^3.10"
 kivy = {extras = ["base"], version = "^2.2.1"}
 kivy-examples = "^2.2.1"
+sqlalchemy = "^2.0.20"
+psycopg2-binary = "^2.9.7"
+python-dotenv = "^1.0.0"
+requests = "^2.31.0"
 
 
 [build-system]

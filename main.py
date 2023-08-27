@@ -1,18 +1,37 @@
+from dotenv import dotenv_values
+
 from kivy.app import App
+from kivy.uix.screenmanager import Screen, ScreenManager
 
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.anchorlayout import AnchorLayout
+from kivy.core.window import Window
 
-class MainWindow(BoxLayout):
-    pass
+from screens.auth.login import LoginScreen, RegistrationScreen
+from screens.cards.collections import CollectionsList
+from db_connect import DataBase
+
+Window.size = (450, 800)
+Window.clearcolor = (0.913, 1, 0.674, 1)
+
 
 class GreatCardsApp(App):
-    
-    def build(self):
-        main_window = MainWindow()
-        return main_window
 
-    
+    main_api_url = dotenv_values().get('MAIN_API_URL')
+
+    def build(self):
+
+        self.screen_manager = ScreenManager()
+
+        login_screen = Screen(name='Login')
+        registration_screen = Screen(name='Registration')
+
+        login_screen.add_widget(LoginScreen())
+        registration_screen.add_widget(RegistrationScreen())
+
+        self.screen_manager.add_widget(login_screen)
+        self.screen_manager.add_widget(registration_screen)
+
+        return self.screen_manager
+
+
 if __name__ == "__main__":
     GreatCardsApp().run()
