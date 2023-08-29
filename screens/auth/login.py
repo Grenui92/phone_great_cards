@@ -1,10 +1,11 @@
+from time import sleep
 from kivy.uix.label import Label
 
 from kivy.uix.screenmanager import Screen
 from screens.auth.login_makets import LogSubBox, LogButton, LogTextInput
 
 from screens.cards.collections import CollectionsList
-from screens.auth.login_services import log_user
+from screens.auth.login_services import log_user, user_registration
 from screens.main_window import MainBox
 
 
@@ -23,7 +24,7 @@ class LoginScreen(MainBox):
     def add_upper_buttons(self):
         self.sub_box = LogSubBox(orientation='horizontal')
         self.upper_button = LogButton(
-            text='Login', on_press=self.switch_registration_login)
+            text='Registration', on_press=self.switch_registration_login)
 
         self.sub_box.add_widget(self.upper_button)
         self.add_widget(self.sub_box)
@@ -53,11 +54,9 @@ class LoginScreen(MainBox):
     def switch_registration_login(self):
 
         if self.running_app.root.current == 'Login':
-            self.upper_button.text = 'Registration'
             self.running_app.root.current = 'Registration'
 
         elif self.running_app.root.current == 'Registration':
-            self.upper_button.text = 'Login'
             self.running_app.root.current = 'Login'
 
     def on_submit(self):
@@ -77,6 +76,14 @@ class LoginScreen(MainBox):
 
 class RegistrationScreen(LoginScreen):
 
+    def add_upper_buttons(self):
+        self.sub_box = LogSubBox(orientation='horizontal')
+        self.upper_button = LogButton(
+            text='Login', on_press=self.switch_registration_login)
+
+        self.sub_box.add_widget(self.upper_button)
+        self.add_widget(self.sub_box)
+    
     def add_text_input(self):
         self.inp_box = LogSubBox(orientation='vertical')
         self.username_inp = LogTextInput(hint_text='Username')
@@ -94,4 +101,13 @@ class RegistrationScreen(LoginScreen):
         self.add_widget(self.inp_box)
 
     def on_submit(self):
-        log_user(self)
+        username = self.username_inp.text
+        password1 = self.password_inp.text
+        password2 = self.confirm_password_inp.text
+        email = self.email.text
+        
+        if all([username, password1, password2, email]):
+            success = user_registration(self, username, password1, password2, email)
+            if success:
+                self.running_app.root.current = 'Login'
+        

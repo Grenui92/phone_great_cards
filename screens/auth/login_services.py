@@ -31,3 +31,11 @@ def log_user(self, username, password):
         session.commit()
         self.running_app.CURRENT_USER = user
         return True
+    
+def user_registration(self, username, password1, password2, email):
+    data = {'username': username,
+            'password1': password1,
+            'password2': password2,
+            'email': email}
+    result = requests.post(f'{self.running_app.main_api_url}auth/registration/', data=data)
+    return True

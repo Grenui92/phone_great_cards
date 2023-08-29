@@ -1,14 +1,22 @@
 
 from kivy.uix.label import Label
+from kivy.uix.button import Button
 
 from screens.main_window import MainBox
+
+from screens.cards.cards_services import get_user_collections
 
 
 class CollectionsList(MainBox):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        
+        self.orientation = 'vertical'
+        self.collections = get_user_collections(self)
 
-        self.username_label = Label(
-            text=self.running_app.CURRENT_USER.username, color=(0, 0, 0, 1))
-        self.add_widget(self.username_label)
+        for col in self.collections:
+            lab = Button(text=col['name'])
+            self.add_widget(lab)
+
+        
