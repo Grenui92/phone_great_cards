@@ -1,7 +1,7 @@
 from dotenv import dotenv_values
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 
 
 class DataBase:
@@ -17,6 +17,7 @@ class DataBase:
         username = Column(String, unique=True)
         csrf_token = Column(String)
         auth_token = Column(String)
+        logged = Column(Boolean)
     
     @classmethod
     def create_table(cls):

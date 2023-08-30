@@ -20,12 +20,14 @@ def log_user(self, username, password):
         if user:
             user.csrf_token = csrf_token
             user.auth_token = auth_token
+            user.logged = True
 
         else:
             user = user_model(username=loged_username,
                               django_id=django_id,
                               csrf_token=csrf_token,
-                              auth_token=auth_token)
+                              auth_token=auth_token,
+                              logged=True)
             session.add(user)
 
         session.commit()
@@ -39,3 +41,10 @@ def user_registration(self, username, password1, password2, email):
             'email': email}
     result = requests.post(f'{self.running_app.main_api_url}auth/registration/', data=data)
     return True
+
+
+def get_logged_user():
+    user = session.query(user_model).filter_by(logged=True).first()
+    if user:
+        return user
+    return None

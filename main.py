@@ -7,7 +7,7 @@ from kivy.core.window import Window
 
 from screens.auth.login import LoginScreen, RegistrationScreen
 from screens.cards.collections import CollectionsList
-from db_connect import DataBase
+from screens.auth.login_services import get_logged_user
 
 Window.size = (450, 800)
 Window.clearcolor = (0.913, 1, 0.674, 1)
@@ -23,6 +23,12 @@ class GreatCardsApp(App):
 
         login_screen = Screen(name='Login')
         registration_screen = Screen(name='Registration')
+
+        self.CURRENT_USER = get_logged_user()
+        if self.CURRENT_USER:
+            collections_list = Screen(name='Colletions')
+            collections_list.add_widget(CollectionsList())
+            self.screen_manager.add_widget(collections_list)
 
         login_screen.add_widget(LoginScreen())
         registration_screen.add_widget(RegistrationScreen())
