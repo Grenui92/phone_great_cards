@@ -1,15 +1,14 @@
-from time import sleep
 from kivy.uix.label import Label
-
 from kivy.uix.screenmanager import Screen
+from kivy.uix.boxlayout import BoxLayout
+
 from screens.auth.login_makets import LogSubBox, LogButton, LogTextInput
-
-from screens.cards.collections import CollectionsList
+from screens.cards.collections import Collections
 from screens.auth.login_services import log_user, user_registration
-from screens.main_window import MainBox
+from screens.main_makets import MainBox
 
 
-class LoginScreen(MainBox):
+class LoginScreen(BoxLayout, MainBox):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -19,7 +18,6 @@ class LoginScreen(MainBox):
         self.add_upper_buttons()
         self.add_text_input()
         self.add_lower_buttons()
-        print(self.running_app)
 
     def add_upper_buttons(self):
         self.sub_box = LogSubBox(orientation='horizontal')
@@ -66,12 +64,10 @@ class LoginScreen(MainBox):
             succes = log_user(self=self, username=username, password=password)
             if succes:
                 collections_list = Screen(name='Colletions')
-                collections_list.add_widget(CollectionsList())
+                collections_list.add_widget(Collections())
 
                 self.running_app.screen_manager.add_widget(collections_list)
                 self.running_app.root.current = 'Colletions'
-        else:
-            print('empty fields')
 
 
 class RegistrationScreen(LoginScreen):

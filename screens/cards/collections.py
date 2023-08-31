@@ -1,60 +1,26 @@
-
-from kivy.graphics import Color, Rectangle
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 
-from screens.main_window import MainBox
 from screens.cards.cards_services import get_user_collections
-from screens.auth.login_makets import LogButton
+from screens.cards.collections_makets import CollectionsButton
+from screens.main_makets import MainBox
 
-
-class CollectionsList(MainBox):
-
+class Collections(GridLayout, MainBox):
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        self.orientation = 'vertical'
-        self.collections = get_user_collections(self)
-
+        self.cols = 2
+        self.spacing = 10
+        self.collections = get_user_collections(self=self)
+        self.rows = len(self.collections)
+        
         for col in self.collections:
-
-            one_collection = Collection(col)
+            open_collection = Button(text=col['name'], background_color = (0, 0, 0, 0))
+            edit_colleciton = CollectionsButton(text=f'Edit')
             
-            
-            self.add_widget(one_collection)
-
-
-class Collection(MainBox):
-    
-    def __init__(self, colleciton, **kwargs):
-        super().__init__(**kwargs)
+            self.add_widget(open_collection)
+            self.add_widget(edit_colleciton)
         
-        
-        with self.canvas.before:
-            Color(1, 0, 0, 0.5)
-            self.rect = Rectangle(size=self.size, pos=self.pos)
-            
-        self.bind(pos=self.update_rect, size=self.update_rect)
-
-
-        self.orientation = 'horizontal'
-        
-        open_collection = CollectionsButton(text=colleciton['name'], background_color=(0, 0, 0, 0))
-        edit_colleciton = CollectionsButton(text=f'Edit')
-        
-        self.add_widget(open_collection)
-        self.add_widget(edit_colleciton)
-        
-        
-    def update_rect(self, instance, value):
-        self.rect.pos = instance.pos
-        self.rect.size = instance.size
-
-        
-class CollectionsButton(Button):
-    
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        
-        self.size_hint_y = 0.4
-
-        self.pos_hint = {'top': 1}
+        self.size_hint = 1, None
+        self.height = 50 * self.rows
