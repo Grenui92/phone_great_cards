@@ -21,8 +21,9 @@ class LoginScreen(BoxLayout, MainBox):
 
     def add_upper_buttons(self):
         self.sub_box = LogSubBox(orientation='horizontal')
-        self.upper_button = LogButton(
-            text='Registration', on_press=self.switch_registration_login)
+        self.upper_button = LogButton(text='Registration',
+                                      on_press=self.switch_registration_login,
+                                      background_color=(1, 0, 0, 1))
 
         self.sub_box.add_widget(self.upper_button)
         self.add_widget(self.sub_box)
@@ -42,8 +43,11 @@ class LoginScreen(BoxLayout, MainBox):
 
     def add_lower_buttons(self):
         self.sub_box = LogSubBox(orientation='horizontal')
-        self.submit_button = LogButton(text='Submit', on_press=self.on_submit)
-        self.reset_button = LogButton(text='Reset')
+        self.submit_button = LogButton(text='Submit',
+                                       on_press=self.on_submit,
+                                       background_color=(1, 0, 0, 1))
+        self.reset_button = LogButton(text='Reset',
+                                      background_color=(1, 0, 0, 1))
 
         self.sub_box.add_widget(self.submit_button)
         self.sub_box.add_widget(self.reset_button)
@@ -74,12 +78,13 @@ class RegistrationScreen(LoginScreen):
 
     def add_upper_buttons(self):
         self.sub_box = LogSubBox(orientation='horizontal')
-        self.upper_button = LogButton(
-            text='Login', on_press=self.switch_registration_login)
+        self.upper_button = LogButton(text='Login', 
+                                      on_press=self.switch_registration_login,
+                                      background_color=(1, 0, 0, 1))
 
         self.sub_box.add_widget(self.upper_button)
         self.add_widget(self.sub_box)
-    
+
     def add_text_input(self):
         self.inp_box = LogSubBox(orientation='vertical')
         self.username_inp = LogTextInput(hint_text='Username')
@@ -101,9 +106,9 @@ class RegistrationScreen(LoginScreen):
         password1 = self.password_inp.text
         password2 = self.confirm_password_inp.text
         email = self.email.text
-        
+
         if all([username, password1, password2, email]):
-            success = user_registration(self, username, password1, password2, email)
+            success = user_registration(
+                self, username, password1, password2, email)
             if success:
                 self.running_app.root.current = 'Login'
-        

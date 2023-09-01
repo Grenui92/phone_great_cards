@@ -17,8 +17,8 @@ class LogSubBox(BoxLayout):
 
 class LogButton(RoundedButton):
 
-    def __init__(self, text, on_press=None, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, background_color, text, on_press=None, **kwargs):
+        super().__init__(background_color, **kwargs)
 
         self.on_press = on_press
         self.text = text
