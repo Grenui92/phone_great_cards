@@ -18,3 +18,6 @@ class CreationButton(RoundedButton):
     def __init__(self, background_color, **kwargs):
         super().__init__(background_color, **kwargs)
         
+        self.size_hint_y = None
+        self.size = 0, 50
+        

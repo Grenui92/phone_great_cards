@@ -6,16 +6,24 @@ from screens.cards.collections_makets import CollectionsButton, CreationButton
 from screens.main_makets import MainBox, RoundedButton
 
 
-class Collections(GridLayout, MainBox):
-
+class CollectionsScreen(MainBox):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.orientation = 'vertical'
+        
+        collections = get_user_collections(self=self)
+        self.add_widget(Collections(collections=collections))
 
+class Collections(GridLayout):
+    
+    def __init__(self, collections, **kwargs):
+        super().__init__(**kwargs)
+        self.collections = collections
+        
         self.cols = 2
+        self.padding = 10
         self.spacing = 10
-        self.collections = get_user_collections(self=self)
         self.rows = len(self.collections) + 1
-        self.pos_hint = {'top': 1}
 
         create_card_button = CreationButton(text='Create Card',
                                             background_color=(1, 0, 1, 1),
@@ -38,5 +46,3 @@ class Collections(GridLayout, MainBox):
             self.add_widget(open_collection)
             self.add_widget(edit_colleciton)
 
-        self.size_hint = 1, None
-        self.height = 50 * self.rows

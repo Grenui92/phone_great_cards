@@ -31,8 +31,8 @@ def log_user(self, username, password):
             session.add(user)
 
         session.commit()
-        self.running_app.CURRENT_USER = user
-        return True
+
+        return user
     
 def user_registration(self, username, password1, password2, email):
     data = {'username': username,
@@ -48,3 +48,9 @@ def get_logged_user():
     if user:
         return user
     return None
+
+def logout(self):
+    self.running_app.CURRENT_USER.csrf_token = None
+    self.running_app.CURRENT_USER.auth_token = None
+    self.running_app.CURRENT_USER.logged = None
+    session.commit()
