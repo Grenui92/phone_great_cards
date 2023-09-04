@@ -53,4 +53,5 @@ def logout(self):
     self.running_app.CURRENT_USER.csrf_token = None
     self.running_app.CURRENT_USER.auth_token = None
     self.running_app.CURRENT_USER.logged = None
-    session.commit()
+    result = requests.get(f'{self.running_app.main_api_url}auth/logout/')
+    return result

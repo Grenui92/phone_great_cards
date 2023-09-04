@@ -4,7 +4,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 
-from time import sleep
+from tools.mixin import RunAppMixin
 
 from screens.auth.login_services import logout
 class RoundedButton(Button):
@@ -28,10 +28,10 @@ class RoundedButton(Button):
         self.rect.size = instance.size
 
 
-class MainBox(BoxLayout):
+class MainBox(BoxLayout, RunAppMixin):
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.running_app = App.get_running_app()
 
         self.sub_box = SubBox(orientation='horizontal', size_hint=(1, 0.1))
         self.clear_widgets()

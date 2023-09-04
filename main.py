@@ -29,6 +29,7 @@ class GreatCardsApp(App):
             collections_list = Screen(name='Collections')
             collections_list.add_widget(CollectionsScreen())
             self.screen_manager.add_widget(collections_list)
+            
         login_screen.add_widget(LoginScreen())
         registration_screen.add_widget(RegistrationScreen())
 

@@ -18,6 +18,13 @@ class DataBase:
         csrf_token = Column(String)
         auth_token = Column(String)
         logged = Column(Boolean)
+        
+    class OrderList(__Base):
+        __tablename__ = 'order_list'
+        
+        id = Column(Integer, primary_key=True)
+        collection_id = Column(Integer, unique=True)
+        order = Column(String)
     
     @classmethod
     def create_table(cls):
@@ -30,6 +37,7 @@ class DataBase:
     
 session = DataBase.get_session()
 user_model = DataBase.CurrentUser
+order_model = DataBase.OrderList
 
 
 if __name__ == '__main__':
