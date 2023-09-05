@@ -6,7 +6,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.core.window import Window
 
 from screens.auth.login import LoginScreen, RegistrationScreen
-from screens.cards.collections import CollectionsScreen
+from screens.cards.collections import LoggedScreen
 from screens.auth.login_services import get_logged_user
 
 Window.size = (450, 800)
@@ -24,8 +24,8 @@ class GreatCardsApp(App):
         self.CURRENT_USER = get_logged_user()
         
         if self.CURRENT_USER:
-            collections_list = Screen(name='Collections')
-            collections_list.add_widget(CollectionsScreen())
+            collections_list = Screen(name='Logged')
+            collections_list.add_widget(LoggedScreen())
             self.screen_manager.add_widget(collections_list)
 
 

@@ -3,7 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 
 from screens.main_makets import SubBox, LoginButton, LoginTextInput
-from screens.cards.collections import CollectionsScreen
+from screens.cards.collections import LoggedScreen
 from screens.auth.login_services import log_user, user_registration
 from screens.main_makets import NavButton
 
@@ -72,11 +72,11 @@ class LoginScreen(BoxLayout, RunAppMixin):
             user = log_user(self=self, username=username, password=password)
             if user:
                 self.running_app.CURRENT_USER = user
-                collections_list = Screen(name='Collections')
-                collections_list.add_widget(CollectionsScreen())
+                collections_list = Screen(name='Logged')
+                collections_list.add_widget(LoggedScreen())
 
                 self.running_app.screen_manager.add_widget(collections_list)
-                self.running_app.root.current = 'Collections'
+                self.running_app.root.current = 'Logged'
 
     def on_reset(self, button):
         self.username_inp.text = ''
@@ -120,3 +120,9 @@ class RegistrationScreen(LoginScreen):
                 self, username, password1, password2, email)
             if success:
                 self.running_app.root.current = 'Login'
+
+    def on_reset(self, button):
+        self.username_inp.text = ''
+        self.password_inp.text = ''
+        self.confirm_password_inp.text = ''
+        self.email.text = ''

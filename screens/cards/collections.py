@@ -1,5 +1,7 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen
 
 from screens.cards.cards_services import get_user_collections, get_cards_from_collection
 from screens.cards.collections_makets import CollectionsButton, CreationButton
@@ -16,13 +18,13 @@ class LoggedNavigation():
                                   on_press=self.logout_switch,
                                   background_color=(1, 0, 0, 1))
         english_cards_button = NavButton(text='Cards',
-                                         on_press=self.logout_switch,
+                                         on_press=self.cards_on_press,
                                          background_color=(0, 0, 1, 1))
         chat_button = NavButton(text='Chat',
-                                on_press=self.logout_switch,
+                                on_press=self.chat_on_press,
                                 background_color=(0, 0, 1, 1))
         day_words = NavButton(text='Words',
-                              on_press=self.logout_switch,
+                              on_press=self.words_on_press,
                               background_color=(0, 0, 1, 1))
 
         self.sub_box.add_widget(english_cards_button)
@@ -34,22 +36,43 @@ class LoggedNavigation():
 
 
     def logout_switch(self, b):
-        
         logout(self=self)
         self.running_app.root.current = 'Login'
         
+    def cards_on_press(self, b):
+        pass
+    
+    def chat_on_press(self, b):
+        pass
+    
+    def words_on_press(self, b):
+        pass
         
+        
+class LoggedScreen(BoxLayout, LoggedNavigation, RunAppMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.add_nav_buttons()
+        
+        label = Label(text='Welcome. Choise what you want on the top.', color=(0, 0, 0, 1))
+        self.add_widget(label)
+
+    def create_screens(self):
+        collections_screen = Screen(name='Collections')
+        collections_screen.add_widget(CollectionsScreen())
+        self.running_app.screen_manager.add_widget(collections_screen)
+
+    def cards_on_press(self, b):
+        return super().cards_on_press(b)
 class CollectionsScreen(BoxLayout, LoggedNavigation, RunAppMixin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
-        
         self.add_nav_buttons()
         collections = get_user_collections(self=self)
         self.add_widget(Collections(collections=collections))
-
-
-
+        
 class Collections(GridLayout, RunAppMixin):
 
     def __init__(self, collections, **kwargs):
