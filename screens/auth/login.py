@@ -5,16 +5,17 @@ from kivy.uix.boxlayout import BoxLayout
 from screens.main_makets import SubBox, LoginButton, LoginTextInput
 from screens.cards.collections import CollectionsScreen
 from screens.auth.login_services import log_user, user_registration
-from screens.main_makets import MainBox
+from screens.main_makets import NavButton
+
+from tools.mixin import RunAppMixin
 
 
-class LoginScreen(MainBox):
+class LoginScreen(BoxLayout, RunAppMixin):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
         self.orientation = 'vertical'
-
+        self.add_nav_buttons()
         self.add_text_input()
         self.add_lower_buttons()
 
@@ -32,7 +33,7 @@ class LoginScreen(MainBox):
         self.add_widget(self.inp_box)
 
     def add_lower_buttons(self):
-        self.sub_box = SubBox(orientation='horizontal')
+        self.submit_box = SubBox(orientation='horizontal')
         
         self.submit_button = LoginButton(text='Submit',
                                          on_press=self.on_submit,
@@ -41,9 +42,28 @@ class LoginScreen(MainBox):
                                         on_press=self.on_reset,
                                         background_color=(1, 0, 0, 1))
 
-        self.sub_box.add_widget(self.submit_button)
-        self.sub_box.add_widget(self.reset_button)
+        self.submit_box.add_widget(self.submit_button)
+        self.submit_box.add_widget(self.reset_button)
+        self.add_widget(self.submit_box)
+
+    def add_nav_buttons(self):
+        self.orientation = 'vertical'
+        
+        self.sub_box = SubBox(orientation='horizontal', size_hint=(1, 0.1))
+
+
+        login_button = NavButton(text='Login',
+                                    on_press=self.switch_to_login,
+                                    background_color=(1, 0, 0, 1))
+        registration_button = NavButton(text='Registration',
+                                        on_press=self.switch_to_registration,
+                                        background_color=(1, 0, 0, 1))
+
+        self.sub_box.add_widget(login_button)
+        self.sub_box.add_widget(registration_button)
+        
         self.add_widget(self.sub_box)
+        
 
     def on_submit(self, button):
         username = self.username_inp.text
@@ -56,12 +76,18 @@ class LoginScreen(MainBox):
                 collections_list.add_widget(CollectionsScreen())
 
                 self.running_app.screen_manager.add_widget(collections_list)
-                self.running_app.build()
                 self.running_app.root.current = 'Collections'
 
     def on_reset(self, button):
         self.username_inp.text = ''
         self.password_inp.text = ''
+
+
+    def switch_to_login(self, b):
+        self.running_app.root.current = 'Login'
+
+    def switch_to_registration(self, b):
+        self.running_app.root.current = 'Registration'
 
 
 class RegistrationScreen(LoginScreen):

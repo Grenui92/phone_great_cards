@@ -10,10 +10,11 @@ def log_user(self, username, password):
         f'{self.running_app.main_api_url}auth/login/', data=data)
 
     if result.status_code == 200:
-        csrf_token = result.cookies['csrftoken']
-        auth_token = result.json().get('token')
-        loged_username = result.json().get('username')
-        django_id = result.json().get('id')
+        csrf_token: str = result.cookies['csrftoken']
+        result: dict = result.json()
+        auth_token: str = result.get('token')
+        loged_username: str = result.get('username')
+        django_id: str = result.get('id')
 
         user = session.query(user_model).filter_by(username=username).first()
 
@@ -53,5 +54,6 @@ def logout(self):
     self.running_app.CURRENT_USER.csrf_token = None
     self.running_app.CURRENT_USER.auth_token = None
     self.running_app.CURRENT_USER.logged = None
+    session.commit()
     result = requests.get(f'{self.running_app.main_api_url}auth/logout/')
     return result
