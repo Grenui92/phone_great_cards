@@ -15,7 +15,7 @@ Window.clearcolor = (0.913, 1, 0.674, 1)
 
 class GreatCardsApp(App):
 
-    main_api_url = dotenv_values().get('MAIN_API_URL')
+    main_api_url = dotenv_values().get('MAIN_1212API_URL')
 
     def build(self):
 
