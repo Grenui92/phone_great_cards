@@ -1,5 +1,4 @@
 import requests
-from sqlalchemy.exc import IntegrityError
 
 from tools.decorators import authorization_decorator
 from db_connect import session, order_model

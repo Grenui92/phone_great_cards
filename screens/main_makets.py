@@ -1,10 +1,7 @@
 from kivy.graphics import RoundedRectangle, Color, Rectangle
-from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-
-from tools.mixin import RunAppMixin
 
 from screens.auth.login_services import logout
 
@@ -79,3 +76,4 @@ class LoginTextInput(TextInput):
         self.size_hint_y = None
         self.size = (0, 30)
         self.pos_hint = {'center_y': 0.5}
+        

@@ -1,7 +1,3 @@
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.button import Button
-from kivy.graphics import Color
-
 from screens.main_makets import RoundedButton
              
 class CollectionsButton(RoundedButton):

@@ -3,11 +3,12 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 
 from screens.main_makets import SubBox, LoginButton, LoginTextInput
-from screens.cards.collections import LoggedScreen
+from screens.english.logged_screens import CollectionsScreen
 from screens.auth.login_services import log_user, user_registration
 from screens.main_makets import NavButton
 
 from tools.mixin import RunAppMixin
+from tools.const import LOGIN_SCREEN_NAME, REGISTRATION_SCREEN_NAME, COLLECTIONS_SCREEN_NAME
 
 
 class LoginScreen(BoxLayout, RunAppMixin):
@@ -52,10 +53,10 @@ class LoginScreen(BoxLayout, RunAppMixin):
         self.sub_box = SubBox(orientation='horizontal', size_hint=(1, 0.1))
 
 
-        login_button = NavButton(text='Login',
+        login_button = NavButton(text=LOGIN_SCREEN_NAME,
                                     on_press=self.switch_to_login,
                                     background_color=(1, 0, 0, 1))
-        registration_button = NavButton(text='Registration',
+        registration_button = NavButton(text=REGISTRATION_SCREEN_NAME,
                                         on_press=self.switch_to_registration,
                                         background_color=(1, 0, 0, 1))
 
@@ -72,11 +73,11 @@ class LoginScreen(BoxLayout, RunAppMixin):
             user = log_user(self=self, username=username, password=password)
             if user:
                 self.running_app.CURRENT_USER = user
-                collections_list = Screen(name='Logged')
-                collections_list.add_widget(LoggedScreen())
+                collections_list = Screen(name=COLLECTIONS_SCREEN_NAME)
+                collections_list.add_widget(CollectionsScreen())
 
                 self.running_app.screen_manager.add_widget(collections_list)
-                self.running_app.root.current = 'Logged'
+                self.running_app.root.current = COLLECTIONS_SCREEN_NAME
 
     def on_reset(self, button):
         self.username_inp.text = ''
@@ -84,10 +85,10 @@ class LoginScreen(BoxLayout, RunAppMixin):
 
 
     def switch_to_login(self, b):
-        self.running_app.root.current = 'Login'
+        self.running_app.root.current = LOGIN_SCREEN_NAME
 
     def switch_to_registration(self, b):
-        self.running_app.root.current = 'Registration'
+        self.running_app.root.current = REGISTRATION_SCREEN_NAME
 
 
 class RegistrationScreen(LoginScreen):
@@ -119,7 +120,7 @@ class RegistrationScreen(LoginScreen):
             success = user_registration(
                 self, username, password1, password2, email)
             if success:
-                self.running_app.root.current = 'Login'
+                self.running_app.root.current = LOGIN_SCREEN_NAME
 
     def on_reset(self, button):
         self.username_inp.text = ''
