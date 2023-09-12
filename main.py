@@ -24,10 +24,12 @@ class GreatCardsApp(App):
         self.CURRENT_USER = get_logged_user()
         
         if self.CURRENT_USER:
-            collections_list = Screen(name='Logged')
-            collections_list.add_widget(LoggedScreen())
-            self.screen_manager.add_widget(collections_list)
+            logged_screen_init = LoggedScreen()
+            logged_screen = Screen(name='Logged')
+            logged_screen.add_widget(logged_screen_init)
+            logged_screen_init.create_screens()
 
+            self.screen_manager.add_widget(logged_screen)
 
         login_screen = Screen(name='Login')
         registration_screen = Screen(name='Registration')

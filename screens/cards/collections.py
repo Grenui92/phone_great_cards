@@ -10,7 +10,7 @@ from screens.main_makets import NavButton, SubBox
 from tools.mixin import RunAppMixin
 from screens.auth.login_services import logout
 
-class LoggedNavigation():        
+class LoggedNavigation(RunAppMixin):        
 
     def add_nav_buttons(self):
         self.sub_box = SubBox(orientation='horizontal', size_hint=(1, 0.1))
@@ -31,22 +31,29 @@ class LoggedNavigation():
         self.sub_box.add_widget(chat_button)
         self.sub_box.add_widget(day_words)
         self.sub_box.add_widget(logout_button)
-
         self.add_widget(self.sub_box)
 
 
     def logout_switch(self, b):
         logout(self=self)
         self.running_app.root.current = 'Login'
+
+    def create_screens(self):
+        collections_screen = Screen(name='Collections')
+        collections_screen.add_widget(CollectionsScreen())
+        self.running_app.screen_manager.add_widget(collections_screen)
         
     def cards_on_press(self, b):
         pass
+        # self.running_app.root.current = 'Collections'
     
     def chat_on_press(self, b):
         pass
+        # self.running_app.root.current = 'Collections'
     
     def words_on_press(self, b):
         pass
+        # self.running_app.root.current = 'Collections'
         
         
 class LoggedScreen(BoxLayout, LoggedNavigation, RunAppMixin):
@@ -54,17 +61,10 @@ class LoggedScreen(BoxLayout, LoggedNavigation, RunAppMixin):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.add_nav_buttons()
-        
+             
         label = Label(text='Welcome. Choise what you want on the top.', color=(0, 0, 0, 1))
         self.add_widget(label)
-
-    def create_screens(self):
-        collections_screen = Screen(name='Collections')
-        collections_screen.add_widget(CollectionsScreen())
-        self.running_app.screen_manager.add_widget(collections_screen)
-
-    def cards_on_press(self, b):
-        return super().cards_on_press(b)
+        
 class CollectionsScreen(BoxLayout, LoggedNavigation, RunAppMixin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
