@@ -1,11 +1,13 @@
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+
 
 from screens.auth.login_services import logout
-from screens.english.cards.cards_services import get_user_collections
-from screens.english.cards.collections import Collections
-from screens.main_makets import NavButton, SubBox
+from screens.english.cards_services import get_user_collections, get_cards_from_collection
+from screens.main_makets import NavButton, SubBox, CreationButton, CollectionsButton
 
 from tools.mixin import RunAppMixin
 from tools.const import LOGIN_SCREEN_NAME, COLLECTIONS_SCREEN_NAME
@@ -38,13 +40,12 @@ class LoggedNavigation(RunAppMixin):
     def logout_switch(self, b):
         logout(self=self)
         self.running_app.root.current = LOGIN_SCREEN_NAME
-
-    def create_screens(self):
-        collections_screen = Screen(name=COLLECTIONS_SCREEN_NAME)
-        collections_screen.add_widget(CollectionsScreen())
-        self.running_app.screen_manager.add_widget(collections_screen)
         
     def cards_on_press(self, b):
+        if COLLECTIONS_SCREEN_NAME not in self.running_app.root.screen_names:
+            collections_screen = Screen(name=COLLECTIONS_SCREEN_NAME)
+            collections_screen.add_widget(CollectionsScreen())
+            self.running_app.screen_manager.add_widget(collections_screen)
         self.running_app.root.current = COLLECTIONS_SCREEN_NAME
     
     def chat_on_press(self, b):
@@ -54,7 +55,8 @@ class LoggedNavigation(RunAppMixin):
         pass
 
         
-class CollectionsScreen(BoxLayout, LoggedNavigation, RunAppMixin):
+class CollectionsScreen(BoxLayout, LoggedNavigation):
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
@@ -62,4 +64,72 @@ class CollectionsScreen(BoxLayout, LoggedNavigation, RunAppMixin):
         collections = get_user_collections(self=self)
         self.add_widget(Collections(collections=collections))
         
+class OpenCollecitonScreen(BoxLayout, LoggedNavigation):
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.add_nav_buttons()
+        s
 
+
+
+# 1111111111111111111111111111111111111111111111111111111111111111111
+# 1111111111111111111111111111111111111111111111111111111111111111111
+# 1111111111111111111111111111111111111111111111111111111111111111111
+# 1111111111111111111111111111111111111111111111111111111111111111111
+# 1111111111111111111111111111111111111111111111111111111111111111111
+# 1111111111111111111111111111111111111111111111111111111111111111111
+
+class Collections(GridLayout, RunAppMixin):
+
+    def __init__(self, collections, **kwargs):
+        super().__init__(**kwargs)
+
+        self.collections = collections
+
+        self.cols = 2
+        self.padding = 10
+        self.spacing = 10
+        self.rows = len(self.collections) + 1
+
+        create_card_button = CreationButton(text='Create Card',
+                                            background_color=(1, 0, 1, 1),
+                                            color=(0, 0, 0, 1),
+                                            font_size=20)
+        create_collection_button = CreationButton(text='Create Collection',
+                                                  background_color=(
+                                                      1, 0, 1, 1),
+                                                  color=(0, 0, 0, 1),
+                                                  font_size=20)
+
+        self.add_widget(create_card_button)
+        self.add_widget(create_collection_button)
+
+        for col in self.collections:
+            open_collection = CollectionsButton(text=col['name'],
+                                                background_color=(
+                                                    0.1, 0.1, 0.1, 0.1),
+                                                on_press=self.open_collection_button)
+            open_collection.data = col
+            edit_colleciton = CollectionsButton(text=f'Edit',
+                                                background_color=(0.1, 0.1, 0.1, 0.1))
+            edit_colleciton.data = col
+
+            self.add_widget(open_collection)
+            self.add_widget(edit_colleciton)
+
+    def open_collection_button(self, instance):
+        collection, cards = get_cards_from_collection(self, instance.data)
+        open_c = Screen(name='Open')
+        open_c.add_widget(OpenCollection(collection=collection, cards=cards))
+        self.running_app.screen_manager.add_widget(open_c)
+        self.running_app.root.current = 'Open'
+            
+class OpenCollection(BoxLayout, RunAppMixin):
+    
+    def __init__(self, collection, cards, **kwargs):
+        super().__init__(**kwargs)
+        
+        label = Label(text=collection['name'])
+        self.add_widget(label)

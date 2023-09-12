@@ -3,9 +3,10 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 
 from screens.main_makets import SubBox, LoginButton, LoginTextInput
+from screens.main_makets import NavButton
+
 from screens.english.logged_screens import CollectionsScreen
 from screens.auth.login_services import log_user, user_registration
-from screens.main_makets import NavButton
 
 from tools.mixin import RunAppMixin
 from tools.const import LOGIN_SCREEN_NAME, REGISTRATION_SCREEN_NAME, COLLECTIONS_SCREEN_NAME

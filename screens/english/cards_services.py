@@ -26,6 +26,6 @@ def get_cards_from_collection(self, headers, collection):
     data = {'collection_id': collection['id']}
     result = requests.get(f'{self.running_app.main_api_url}cards/', data=data, headers=headers)
     
-    result = result.json()
+    cards = result.json()
     
-    return result
+    return collection, cards

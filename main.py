@@ -27,7 +27,6 @@ class GreatCardsApp(App):
             logged_screen_init = CollectionsScreen()
             logged_screen = Screen(name=COLLECTIONS_SCREEN_NAME)
             logged_screen.add_widget(logged_screen_init)
-            logged_screen_init.create_screens()
 
             self.screen_manager.add_widget(logged_screen)
 

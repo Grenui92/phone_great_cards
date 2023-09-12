@@ -76,4 +76,20 @@ class LoginTextInput(TextInput):
         self.size_hint_y = None
         self.size = (0, 30)
         self.pos_hint = {'center_y': 0.5}
+             
+class CollectionsButton(RoundedButton):
+    
+    def __init__(self, background_color, **kwargs):
+        super().__init__(background_color, **kwargs)
         
+        self.size_hint_y = None
+        self.size = 0, 30
+
+        
+class CreationButton(RoundedButton):
+    
+    def __init__(self, background_color, **kwargs):
+        super().__init__(background_color, **kwargs)
+        
+        self.size_hint_y = None
+        self.size = 0, 50     
