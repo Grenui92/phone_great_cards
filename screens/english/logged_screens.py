@@ -13,7 +13,7 @@ from tools.mixin import RunAppMixin
 from tools.const import LOGIN_SCREEN_NAME, COLLECTIONS_SCREEN_NAME
 
 
-class LoggedNavigation(RunAppMixin):        
+class LoggedNavigation(RunAppMixin):
 
     def add_nav_buttons(self):
         self.sub_box = SubBox(orientation='horizontal', size_hint=(1, 0.1))
@@ -36,42 +36,40 @@ class LoggedNavigation(RunAppMixin):
         self.sub_box.add_widget(logout_button)
         self.add_widget(self.sub_box)
 
-
     def logout_switch(self, b):
         logout(self=self)
         self.running_app.root.current = LOGIN_SCREEN_NAME
-        
+
     def cards_on_press(self, b):
         if COLLECTIONS_SCREEN_NAME not in self.running_app.root.screen_names:
             collections_screen = Screen(name=COLLECTIONS_SCREEN_NAME)
             collections_screen.add_widget(CollectionsScreen())
             self.running_app.screen_manager.add_widget(collections_screen)
         self.running_app.root.current = COLLECTIONS_SCREEN_NAME
-    
+
     def chat_on_press(self, b):
         pass
-    
+
     def words_on_press(self, b):
         pass
 
-        
+
 class CollectionsScreen(BoxLayout, LoggedNavigation):
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.add_nav_buttons()
         collections = get_user_collections(self=self)
         self.add_widget(Collections(collections=collections))
-        
+
+
 class OpenCollecitonScreen(BoxLayout, LoggedNavigation):
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.add_nav_buttons()
-        s
-
 
 
 # 1111111111111111111111111111111111111111111111111111111111111111111
@@ -125,11 +123,67 @@ class Collections(GridLayout, RunAppMixin):
         open_c.add_widget(OpenCollection(collection=collection, cards=cards))
         self.running_app.screen_manager.add_widget(open_c)
         self.running_app.root.current = 'Open'
-            
+
+
 class OpenCollection(BoxLayout, RunAppMixin):
-    
+
     def __init__(self, collection, cards, **kwargs):
         super().__init__(**kwargs)
-        
+
+        self.collection = collection
+        self.cards = cards
+        self.orientation = 'vertical'
+
         label = Label(text=collection['name'])
+
         self.add_widget(label)
+        self.add_translate()
+        self.add_cards_buttons()
+
+    def add_cards_buttons(self):
+        cards_buttons = SubBox(orientation='horizontal')
+
+        i_know_button = CreationButton(text='I know',
+                                       background_color=(0, 1, 0.5, 1),
+                                       on_press=self.i_know_word)
+        remind_button = CreationButton(text='Remind',
+                                       background_color=(0, 1, 0.5, 1),
+                                       on_press=self.remind_word)
+
+        cards_buttons.add_widget(i_know_button)
+        cards_buttons.add_widget(remind_button)
+
+        self.add_widget(cards_buttons)
+
+    def add_translate(self):
+        translate = SubBox(orientation='vertical')
+
+        self.english_card_text = self.cards[0]['english_word']
+        self.russian_card_text = self.cards[0]['russian_word']
+
+        translate_button = CreationButton(text='Translate',
+                                          background_color=(0, 1, 0.5, 1),
+                                          on_press=self.translate)
+
+        self.word = Label(text=self.english_card_text)
+        self.language_flag = 'English'
+
+        translate.add_widget(self.word)
+        translate.add_widget(translate_button)
+
+        self.add_widget(translate)
+
+    def translate(self, instance):
+        if self.language_flag == 'English':
+            self.word.text = self.russian_card_text
+            self.language_flag = 'Russian'
+
+        elif self.language_flag == 'Russian':
+            self.word.text = self.english_card_text
+            self.language_flag = 'English'
+
+    def i_know_word(self):
+        pass
+
+    def remind_word(self):
+        pass
