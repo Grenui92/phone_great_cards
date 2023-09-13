@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+current_user.db
 # C extensions
 *.so
 

@@ -131,18 +131,29 @@ class OpenCollection(BoxLayout, RunAppMixin):
         super().__init__(**kwargs)
 
         self.collection = collection
+        self.collection_order_list = collection['order_list']
         self.cards = cards
         self.orientation = 'vertical'
 
         label = Label(text=collection['name'])
 
         self.add_widget(label)
-        self.add_translate()
-        self.add_cards_buttons()
-
-    def add_cards_buttons(self):
+        self.create_card_window()
+        
+    def create_card_window(self):
+        self.translate_window = SubBox(orientation='vertical')
         cards_buttons = SubBox(orientation='horizontal')
-
+        
+        self.current_card = self.cards[self.collection_order_list[0]-1]
+        self.english_card_text = self.current_card['english_word']
+        self.russian_card_text = self.current_card['russian_word']
+        
+        self.language_flag = 'English'        
+        self.word = Label(text=self.english_card_text)   
+             
+        translate_button = CreationButton(text='Translate',
+                                          background_color=(0, 1, 0.5, 1),
+                                          on_press=self.translate_words)
         i_know_button = CreationButton(text='I know',
                                        background_color=(0, 1, 0.5, 1),
                                        on_press=self.i_know_word)
@@ -153,27 +164,13 @@ class OpenCollection(BoxLayout, RunAppMixin):
         cards_buttons.add_widget(i_know_button)
         cards_buttons.add_widget(remind_button)
 
-        self.add_widget(cards_buttons)
+        self.translate_window.add_widget(self.word)
+        self.translate_window.add_widget(translate_button)
+        self.translate_window.add_widget(cards_buttons)
 
-    def add_translate(self):
-        translate = SubBox(orientation='vertical')
+        self.add_widget(self.translate_window)
 
-        self.english_card_text = self.cards[0]['english_word']
-        self.russian_card_text = self.cards[0]['russian_word']
-
-        translate_button = CreationButton(text='Translate',
-                                          background_color=(0, 1, 0.5, 1),
-                                          on_press=self.translate)
-
-        self.word = Label(text=self.english_card_text)
-        self.language_flag = 'English'
-
-        translate.add_widget(self.word)
-        translate.add_widget(translate_button)
-
-        self.add_widget(translate)
-
-    def translate(self, instance):
+    def translate_words(self, instance):
         if self.language_flag == 'English':
             self.word.text = self.russian_card_text
             self.language_flag = 'Russian'
@@ -182,8 +179,16 @@ class OpenCollection(BoxLayout, RunAppMixin):
             self.word.text = self.english_card_text
             self.language_flag = 'English'
 
-    def i_know_word(self):
-        pass
+    def i_know_word(self, instance):
+        
+        self.collection_order_list.append(self.collection_order_list[0])
+        self.collection_order_list = self.collection_order_list[1:]
+        self.remove_widget(self.translate_window)
+        self.create_card_window()
 
-    def remind_word(self):
-        pass
+    def remind_word(self, instance):
+        
+        self.collection_order_list.insert(2 ,self.collection_order_list[0])
+        self.collection_order_list = self.collection_order_list[1:]
+        self.remove_widget(self.translate_window)
+        self.create_card_window()
