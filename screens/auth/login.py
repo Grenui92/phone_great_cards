@@ -5,7 +5,7 @@ from kivy.uix.boxlayout import BoxLayout
 from screens.main_makets import SubBox, LoginButton, LoginTextInput
 from screens.main_makets import NavButton
 
-from screens.english.logged_screens import CollectionsScreen
+from screens.english.logged_screens import LoggedScreens, Collections
 from screens.auth.login_services import log_user, user_registration
 
 from tools.mixin import RunAppMixin
@@ -75,7 +75,7 @@ class LoginScreen(BoxLayout, RunAppMixin):
             if user:
                 self.running_app.CURRENT_USER = user
                 collections_list = Screen(name=COLLECTIONS_SCREEN_NAME)
-                collections_list.add_widget(CollectionsScreen())
+                collections_list.add_widget(LoggedScreens(widget_class=Collections))
 
                 self.running_app.screen_manager.add_widget(collections_list)
                 self.running_app.root.current = COLLECTIONS_SCREEN_NAME

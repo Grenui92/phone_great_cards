@@ -13,8 +13,14 @@ from tools.mixin import RunAppMixin
 from tools.const import LOGIN_SCREEN_NAME, COLLECTIONS_SCREEN_NAME
 
 
-class LoggedNavigation(RunAppMixin):
+class LoggedScreens(BoxLayout, RunAppMixin):
 
+    def __init__(self, widget_class, *args, **kwargs):
+        super().__init__()
+        self.orientation = 'vertical'
+        self.add_nav_buttons()
+        self.create_main_widget(widget_class, **kwargs)
+    
     def add_nav_buttons(self):
         self.sub_box = SubBox(orientation='horizontal', size_hint=(1, 0.1))
         logout_button = NavButton(text='Logout',
@@ -43,7 +49,7 @@ class LoggedNavigation(RunAppMixin):
     def cards_on_press(self, b):
         if COLLECTIONS_SCREEN_NAME not in self.running_app.root.screen_names:
             collections_screen = Screen(name=COLLECTIONS_SCREEN_NAME)
-            collections_screen.add_widget(CollectionsScreen())
+            collections_screen.add_widget(LoggedScreens(widget_class=Collections))
             self.running_app.screen_manager.add_widget(collections_screen)
         self.running_app.root.current = COLLECTIONS_SCREEN_NAME
 
@@ -52,25 +58,10 @@ class LoggedNavigation(RunAppMixin):
 
     def words_on_press(self, b):
         pass
-
-
-class CollectionsScreen(BoxLayout, LoggedNavigation):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = 'vertical'
-        self.add_nav_buttons()
-        collections = get_user_collections(self=self)
-        self.add_widget(Collections(collections=collections))
-
-
-class OpenCollecitonScreen(BoxLayout, LoggedNavigation):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = 'vertical'
-        self.add_nav_buttons()
-
+    
+    def create_main_widget(self, widget_class, **kwargs):
+        main_widget = widget_class(**kwargs)
+        self.add_widget(main_widget)
 
 # 1111111111111111111111111111111111111111111111111111111111111111111
 # 1111111111111111111111111111111111111111111111111111111111111111111
@@ -81,9 +72,9 @@ class OpenCollecitonScreen(BoxLayout, LoggedNavigation):
 
 class Collections(GridLayout, RunAppMixin):
 
-    def __init__(self, collections, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
+        collections = get_user_collections(self=self)
         self.collections = collections
 
         self.cols = 2
@@ -120,7 +111,7 @@ class Collections(GridLayout, RunAppMixin):
     def open_collection_button(self, instance):
         collection, cards = get_cards_from_collection(self, instance.data)
         open_c = Screen(name='Open')
-        open_c.add_widget(OpenCollection(collection=collection, cards=cards))
+        open_c.add_widget(LoggedScreens(widget_class=OpenCollection, collection=collection, cards=cards))
         self.running_app.screen_manager.add_widget(open_c)
         self.running_app.root.current = 'Open'
 
@@ -135,7 +126,7 @@ class OpenCollection(BoxLayout, RunAppMixin):
         self.cards = cards
         self.orientation = 'vertical'
 
-        label = Label(text=collection['name'])
+        label = Label(text=collection['name'], size_hint=(1, 0.05))
 
         self.add_widget(label)
         self.create_card_window()
