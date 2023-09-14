@@ -19,3 +19,17 @@ def get_cards_from_collection(self, headers, collection):
     cards = result.json()
     
     return collection, cards
+
+@authorization_decorator
+def change_card_position(self, headers, word_id=None, replace=None, collection_id=None):
+    data = {'word_id': int(word_id),
+            'replace': replace,
+            'collection_id': collection_id}
+    result = requests.post(f'{self.running_app.main_api_url}cards/change_position/', data=data, headers=headers)
+    
+    result = result.json()
+    new_collection = result['new_collection']
+    return new_collection
+    
+    
+    

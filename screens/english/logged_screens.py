@@ -6,7 +6,7 @@ from kivy.uix.label import Label
 
 
 from screens.auth.login_services import logout
-from screens.english.cards_services import get_user_collections, get_cards_from_collection
+from screens.english.cards_services import get_user_collections, get_cards_from_collection, change_card_position
 from screens.main_makets import NavButton, SubBox, CreationButton, CollectionsButton
 
 from tools.mixin import RunAppMixin
@@ -131,7 +131,7 @@ class OpenCollection(BoxLayout, RunAppMixin):
         super().__init__(**kwargs)
 
         self.collection = collection
-        self.collection_order_list = collection['order_list']
+
         self.cards = cards
         self.orientation = 'vertical'
 
@@ -139,18 +139,19 @@ class OpenCollection(BoxLayout, RunAppMixin):
 
         self.add_widget(label)
         self.create_card_window()
-        
+
     def create_card_window(self):
+        self.collection_order_list = self.collection['order_list']
         self.translate_window = SubBox(orientation='vertical')
         cards_buttons = SubBox(orientation='horizontal')
-        
+
         self.current_card = self.cards[self.collection_order_list[0]-1]
         self.english_card_text = self.current_card['english_word']
         self.russian_card_text = self.current_card['russian_word']
-        
-        self.language_flag = 'English'        
-        self.word = Label(text=self.english_card_text)   
-             
+
+        self.language_flag = 'English'
+        self.word = Label(text=self.english_card_text)
+
         translate_button = CreationButton(text='Translate',
                                           background_color=(0, 1, 0.5, 1),
                                           on_press=self.translate_words)
@@ -180,15 +181,19 @@ class OpenCollection(BoxLayout, RunAppMixin):
             self.language_flag = 'English'
 
     def i_know_word(self, instance):
-        
-        self.collection_order_list.append(self.collection_order_list[0])
-        self.collection_order_list = self.collection_order_list[1:]
+        self.collection = change_card_position(self,
+                                               replace=1,
+                                               word_id=self.current_card['id'],
+                                               collection_id=self.collection['id'])
+
         self.remove_widget(self.translate_window)
         self.create_card_window()
 
     def remind_word(self, instance):
-        
-        self.collection_order_list.insert(2 ,self.collection_order_list[0])
-        self.collection_order_list = self.collection_order_list[1:]
+        self.collection = change_card_position(self,
+                                               replace=0,
+                                               word_id=self.current_card['id'],
+                                               collection_id=self.collection['id'])
+
         self.remove_widget(self.translate_window)
         self.create_card_window()
