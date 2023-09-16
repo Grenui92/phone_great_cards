@@ -30,6 +30,27 @@ def change_card_position(self, headers, word_id=None, replace=None, collection_i
     result = result.json()
     new_collection = result['new_collection']
     return new_collection
+ 
+@authorization_decorator
+def create_card(self, headers, card, collection_id):
+    data = {'english_word': card['english_word'],
+            'russian_word': card['russian_word'],
+            'word_usage': card['word_usage'],
+            'collection_id': collection_id}
+
+    
+    result = requests.post(f'{self.running_app.main_api_url}cards/create_card/', data=data, headers=headers) 
+    return result.json()
+    
+@authorization_decorator
+def get_card_information(self, headers, collection_id):
+    data = {'english_word': self.english_word.text,
+            'russian_word': self.russian_word.text,
+            'word_usage': self.word_usage.text,
+            'collection_id': collection_id}
+
+    result = requests.post(f'{self.running_app.main_api_url}cards/get_card_information/', data=data, headers=headers)
+    return result.json()
     
     
     
