@@ -2,6 +2,8 @@ from kivy.graphics import RoundedRectangle, Color, Rectangle
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.core.window import Window
 
 from screens.auth.login_services import logout
 
@@ -28,14 +30,17 @@ class RoundedButton(Button):
 
 class SubBox(BoxLayout):
 
-    def __init__(self, orientation, **kwargs):
+    def __init__(self, orientation, background_color=None, **kwargs):
         super().__init__(**kwargs)
 
         self.orientation = orientation
         self.padding = (self.width * 0.2, self.height * 0.1)
         self.spacing = (self.height * 0.1)
         with self.canvas.before:
-            Color(0, 0, 1, 1)
+            if background_color:
+                Color(*background_color)
+            else:    
+                Color(0, 0, 1, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.bind(size=self._update_rect, pos=self._update_rect)
@@ -90,6 +95,15 @@ class CreationButton(RoundedButton):
     
     def __init__(self, background_color, **kwargs):
         super().__init__(background_color, **kwargs)
-        
+
         self.size_hint_y = None
         self.size = 0, 50     
+        
+class ConfirmLabel(Label):
+    
+    def __init__(self, background_color=None, new_size=None, **kwargs):
+        super().__init__(**kwargs)
+
+        self.size_hint = None, None
+        self.size = Window.width*0.9, ((len(self.text)/70) + 2) * 20
+        self.text_size = self.size
