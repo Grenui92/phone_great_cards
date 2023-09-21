@@ -1,5 +1,7 @@
 import requests
 
+from kivy.uix.screenmanager import Screen
+
 from tools.decorators import authorization_decorator
 from db_connect import session, order_model
 
@@ -51,6 +53,11 @@ def get_card_information(self, headers, collection_id):
 
     result = requests.post(f'{self.running_app.main_api_url}cards/get_card_information/', data=data, headers=headers)
     return result.json()
+
+@authorization_decorator
+def create_collection(self, headers, colleciton_name, username):
+    data = {'collection_name': colleciton_name,
+            'username': username}
     
-    
-    
+    result = requests.post(f'{self.running_app.main_api_url}cards/create_collection/', data=data, headers=headers)
+    return result.json()

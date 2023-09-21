@@ -7,13 +7,14 @@ from kivy.uix.spinner import Spinner
 
 from screens.auth.login_services import logout
 from screens.english.cards_services import get_user_collections, get_cards_from_collection, change_card_position
-from screens.english.cards_services import create_card, get_card_information
+from screens.english.cards_services import create_card, get_card_information, create_collection
 from screens.main_makets import NavButton, SubBox, CreationButton, CollectionsButton, LoginTextInput
 from screens.main_makets import LoginButton, ConfirmLabel
 
 from tools.mixin import RunAppMixin
 from tools.const import LOGIN_SCREEN_NAME, COLLECTIONS_SCREEN_NAME
 from tools.colors import Colors
+from tools.funcs import switch_to_other_screen
 
 
 class LoggedScreens(BoxLayout, RunAppMixin):
@@ -41,8 +42,9 @@ class LoggedScreens(BoxLayout, RunAppMixin):
 
         self.sub_box.add_widget(english_cards_button)
         self.sub_box.add_widget(chat_button)
-        self.sub_box.add_widget(day_words)
+        self.sub_box.add_widget(day_words)   
         self.sub_box.add_widget(logout_button)
+
         self.add_widget(self.sub_box)
 
     def logout_switch(self, b):
@@ -50,12 +52,11 @@ class LoggedScreens(BoxLayout, RunAppMixin):
         self.running_app.root.current = LOGIN_SCREEN_NAME
 
     def cards_on_press(self, b):
-        if COLLECTIONS_SCREEN_NAME not in self.running_app.root.screen_names:
-            collections_screen = Screen(name=COLLECTIONS_SCREEN_NAME)
-            collections_screen.add_widget(
-                LoggedScreens(widget_class=Collections))
-            self.running_app.screen_manager.add_widget(collections_screen)
-        self.running_app.root.current = COLLECTIONS_SCREEN_NAME
+
+        cur_screen = self.running_app.screen_manager.get_screen(COLLECTIONS_SCREEN_NAME)
+        self.running_app.screen_manager.remove_widget(cur_screen)
+        switch_to_other_screen(*SWITCH_TO_COLLECTIONS_DATA, self=self)
+
 
     def chat_on_press(self, b):
         pass
@@ -66,6 +67,7 @@ class LoggedScreens(BoxLayout, RunAppMixin):
     def create_main_widget(self, widget_class, **kwargs):
         main_widget = widget_class(**kwargs)
         self.add_widget(main_widget)
+
 
 # 1111111111111111111111111111111111111111111111111111111111111111111
 # 1111111111111111111111111111111111111111111111111111111111111111111
@@ -95,7 +97,8 @@ class Collections(GridLayout, RunAppMixin):
         create_collection_button = CreationButton(text='Create Collection',
                                                   background_color=Colors.pink,
                                                   color=Colors.black,
-                                                  font_size=20)
+                                                  font_size=20,
+                                                  on_press=self.crreate_collection_button)
 
         self.add_widget(create_card_button)
         self.add_widget(create_collection_button)
@@ -115,14 +118,15 @@ class Collections(GridLayout, RunAppMixin):
     def open_collection_button(self, instance):
 
         collection, cards = get_cards_from_collection(self, instance.data)
-
-        open_c = Screen(name=f'Open{collection["id"]}')
-
-        open_c.add_widget(LoggedScreens(
-            widget_class=OpenCollection, collection=collection, cards=cards))
-
-        self.running_app.screen_manager.add_widget(open_c)
-        self.running_app.root.current = f'Open{collection["id"]}'
+        screen_name = f'Open{collection["id"]}'
+        
+        switch_to_other_screen(self=self,
+                               BaseClass=LoggedScreens,
+                               InnerClass=OpenCollection,
+                               collection=collection,
+                               cards=cards,
+                               screen_name=screen_name)
+        
 
     def create_card_button(self, instance):
         create_card_screen = Screen(name='CreateCard')
@@ -130,6 +134,13 @@ class Collections(GridLayout, RunAppMixin):
         self.running_app.screen_manager.add_widget(create_card_screen)
         self.running_app.root.current = 'CreateCard'
 
+    def crreate_collection_button(self, instance):
+        create_collection_screen = Screen(name='CreateCollection')
+        create_collection_screen.add_widget(LoggedScreens(widget_class=CreateCollection))
+        self.running_app.screen_manager.add_widget(create_collection_screen)
+        self.running_app.root.current = 'CreateCollection'
+        
+SWITCH_TO_COLLECTIONS_DATA = [LoggedScreens, Collections, COLLECTIONS_SCREEN_NAME]
 
 class OpenCollection(BoxLayout, RunAppMixin):
 
@@ -227,6 +238,7 @@ class CreateCard(BoxLayout, RunAppMixin):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        
         self.orientation = 'vertical'
 
         self.add_form_inputs()
@@ -273,16 +285,16 @@ class CreateCard(BoxLayout, RunAppMixin):
             x['name'] == self.selected_collection.text), self.collections))
         if col:
             card = get_card_information(self=self, collection_id=col[0]['id'])
-            confirm_screen = Screen(name='Confirm creation')
-            confirm_screen.add_widget(LoggedScreens(widget_class=ConfirmCardCreation,
-                                                    card=card,
-                                                    collection=col[0]))
-            self.running_app.screen_manager.add_widget(confirm_screen)
-            self.running_app.root.current = 'Confirm creation'
+            switch_to_other_screen(self=self, 
+                                   BaseClass=LoggedScreens, 
+                                   InnerClass=ConfirmCardCreation,
+                                   card=card,
+                                   collection=col[0],
+                                   screen_name='Confirm_creation')
 
         else:
             self.creation_form.add_widget(
-                Label(text='You have to choice colelction'))
+                Label(text='You have to choice collection'))
 
     def on_reset(self, instance):
         self.english_word.text = ''
@@ -341,7 +353,51 @@ class ConfirmCardCreation(BoxLayout, RunAppMixin):
 
     def on_submit(self, instance):
         result = create_card(self=self, card=self.card, collection_id=self.collection['id'])
-        self.running_app.root.current = COLLECTIONS_SCREEN_NAME
+        switch_to_other_screen(*SWITCH_TO_COLLECTIONS_DATA, self=self)
 
     def on_reset(self, instance):
-        pass
+        self.running_app.current = COLLECTIONS_SCREEN_NAME
+        
+class CreateCollection(BoxLayout, RunAppMixin):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'vertical'
+
+        self.add_form_inputs()
+        self.add_form_buttons()
+
+    def add_form_inputs(self):
+        self.collections = get_user_collections(self=self)
+
+        self.creation_form = SubBox(orientation='vertical',
+                                    pos_hint={'top': 1})
+        self.collection_name = LoginTextInput(hint_text='Collection name')
+
+        self.creation_form.add_widget(self.collection_name)
+
+        self.add_widget(self.creation_form)
+
+    def add_form_buttons(self):
+        buttons = SubBox(orientation='horizontal')
+
+        submit_button = LoginButton(text='Submit',
+                                    background_color=Colors.for_buttons,
+                                    color=Colors.black,
+                                    on_press=self.on_submit)
+        reset_button = LoginButton(text='Reset',
+                                   background_color=Colors.for_buttons,
+                                   color=Colors.black,
+                                   on_press=self.on_reset)
+
+        buttons.add_widget(submit_button)
+        buttons.add_widget(reset_button)
+
+        self.add_widget(buttons)
+
+    def on_submit(self, instance):
+        result = create_collection(self=self, colleciton_name=self.collection_name.text, username=self.running_app.CURRENT_USER.username)
+        switch_to_other_screen(*SWITCH_TO_COLLECTIONS_DATA, self=self)
+
+    def on_reset(self, instance):
+        self.collection_name.text = ''
